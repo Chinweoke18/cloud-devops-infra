@@ -21,6 +21,20 @@ resource "aws_security_group" "lb" {
   }
 
   ingress {
+    protocol    = "tcp"
+    from_port   = 8080
+    to_port     = 8080
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    protocol    = "tcp"
+    from_port   = 3000
+    to_port     = 3000
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
    protocol         = "tcp"
    from_port        = 443
    to_port          = 443
@@ -34,4 +48,14 @@ resource "aws_security_group" "lb" {
     to_port     = 0
     cidr_blocks = ["0.0.0.0/0"]
   }
+}
+
+
+
+output "load_balancer_arn" {
+  value = aws_alb.main.arn
+}
+
+output "load_balancer_sg" {
+  value = aws_security_group.lb.id
 }

@@ -1,5 +1,10 @@
 data "aws_availability_zones" "available" {}
 
+resource "random_id" "suffix" {
+  byte_length = 4
+  
+}
+
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
@@ -32,15 +37,16 @@ module "iam" {
   
 }
 
-# module "cloudwatch" {
-#   source = "./modules/cloudwatch"
-  
-#   log_grp = "/ecs/cloud-devops-log"
+module "s3_backend" {
+  source = "./modules/s3_backend"
+  bucket_name = "cloud-pipeline-tf-state-${random_id.suffix.hex}"
+  dynamodb_table_name = "cloud-devops-pipeline-lock-table"
 
-# }
-
+}
 
 resource "aws_ecs_cluster" "main" {
     
   name = var.cluster_name
 }
+
+
